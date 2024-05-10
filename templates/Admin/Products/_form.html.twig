@@ -1,3 +1,5 @@
+
+
 {{ form_start(productForm) }}
     {{ form_row(productForm.name) }}
     {{ form_row(productForm.description) }}
@@ -20,3 +22,25 @@
 
     <button type="submit" class="btn btn-primary">{{ button_label|default('Ajouter') }}</button>
 {{ form_end(productForm) }}
+{# <script>
+document.addEventListener('click', function(e) {
+    if (e.target.dataset.delete) {
+        e.preventDefault();
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) {
+            fetch(e.target.href, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': e.target.dataset.token
+                }
+            }).then(res => {
+                if (res.ok) {
+                    e.target.closest('div').remove();
+                } else {
+                    alert('Erreur lors de la suppression de l\'image');
+                }
+            });
+        }
+    }
+});
+</script> #}

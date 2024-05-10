@@ -4,7 +4,7 @@
 
 {% block body %}
 <h1> Administration des produits </h1>
-    {# <div class="container">
+     {<div class="container">
         <div class="row">
             {% include "_partials/_adminnav.html.twig" %}
             <main class="col-9 border border-light bg-white p-2">
@@ -22,22 +22,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for produit in produits %}
-                            <tr>
-                                <td>{{ produit.id }}</td>
-                                <td><img src="{{ asset('assets/uploads/products/mini/300x300-' ~ produit.images[0].name ) }}" alt="{{ produit.name }}" class="img-thumbnail"></td>
-                                <td>{{ produit.name }}</td>
-                                <td>{{ produit.price / 100 }}</td>
-                                <td>{{ produit.stock }}</td>
-                                <td>{{ produit.categories.name }}</td>
-                                <td>
-                                    <a href="{{ path('admin_products_edit', {id: produit.id})}}" class="btn btn-success">Modifier</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                       {% for produit in produits %}
+    <tr>
+        <td>{{ produit.id }}</td>
+        <td>
+            {% if produit.images|length > 0 %}
+                {% set firstImage = produit.images|first %}
+                <img src="{{ asset('assets/uploads/products/mini/300x300-' ~ firstImage.name) }}" alt="{{ produit.name }}" class="img-thumbnail">
+            {% else %}
+                <img src="{{ asset('path/to/default/image.jpg') }}" alt="Default Image" class="img-thumbnail">
+            {% endif %}
+        </td>
+        <td>{{ produit.name }}</td>
+        <td>{{ produit.price / 100 }}</td>
+        <td>{{ produit.stock }}</td>
+        <td>{{ produit.categories.name }}</td>
+        <td>
+            <a href="{{ path('admin_products_edit', {id: produit.id})}}" class="btn btn-success">Modifier</a>
+        </td>
+    </tr>
+{% endfor %}
+
                     </tbody>
                 </table>
             </main>
         </div>
-    </div> #}
+    </div> }
 {% endblock %}
