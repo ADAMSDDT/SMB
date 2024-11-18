@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Products;
+use App\Entity\Size;  // N'oublie pas d'ajouter l'entité Size
 use App\Repository\CategoriesRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -20,11 +21,11 @@ class ProductsFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', options:[
+            ->add('name', options: [
                 'label' => 'Nom'
             ])
             ->add('description')
-            ->add('price', MoneyType::class, options:[
+            ->add('price', MoneyType::class, options: [
                 'label' => 'Prix',
                 'divisor' => 100,
                 'constraints' => [
@@ -33,7 +34,7 @@ class ProductsFormType extends AbstractType
                     )
                 ]
             ])
-            ->add('stock', options:[
+            ->add('stock', options: [
                 'label' => 'Unités en stock'
             ])
             ->add('categories', EntityType::class, [
@@ -41,11 +42,18 @@ class ProductsFormType extends AbstractType
                 'choice_label' => 'name',
                 'label' => 'Catégorie',
                 'group_by' => 'parent.name',
-                'query_builder' => function(CategoriesRepository $cr){
+                'query_builder' => function(CategoriesRepository $cr) {
                     return $cr->createQueryBuilder('c')
                         ->where('c.parent IS NOT NULL')
                         ->orderBy('c.name', 'ASC');
                 }
+            ])
+            ->add('sizes', EntityType::class, [
+                'class' => Size::class,  // L'entité Size
+                'choice_label' => 'name',  // Afficher le nom des tailles
+                'label' => 'Tailles disponibles',
+                'multiple' => true,  // Permettre la sélection multiple
+                'expanded' => true,  // Afficher comme des checkboxes au lieu d'un select
             ])
             ->add('images', FileType::class, [
                 'label' => false,

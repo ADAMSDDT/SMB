@@ -20,6 +20,14 @@ class CategoriesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Categories::class);
     }
+    public function findByNameLike(string $query)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.name LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Categories[] Returns an array of Categories objects

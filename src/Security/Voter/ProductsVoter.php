@@ -20,46 +20,48 @@ class ProductsVoter extends Voter
         $this->security = $security;
     }
 
+    // Vérifie si l'attribut et l'objet sont supportés
     protected function supports(string $attribute, $product): bool
     {
-        if(!in_array($attribute, [self::EDIT, self::DELETE])){
-            return false;
-        }
-        if(!$product instanceof Products){
-            return false;
-        }
-        return true;
-
-        // return in_array($attribute, [self::EDIT, self::DELETE]) && $product instanceof Products;
+        return in_array($attribute, [self::EDIT, self::DELETE]) && $product instanceof Products;
     }
 
+    // Vérifie les permissions en fonction de l'attribut (edit, delete)
     protected function voteOnAttribute($attribute, $product, TokenInterface $token): bool
     {
-        // On récupère l'utilisateur à partir du token
+        // Récupère l'utilisateur actuel
         $user = $token->getUser();
 
-        if(!$user instanceof UserInterface) return false;
-
-        // On vérifie si l'utilisateur est admin
-        if($this->security->isGranted('ROLE_ADMIN')) return true;
-
-        // On vérifie les permissions
-        switch($attribute){
-            case self::EDIT:
-                // On vérifie si l'utilisateur peut éditer
-                return $this->canEdit();
-                break;
-            case self::DELETE:
-                // On vérifie si l'utilisateur peut supprimer
-                return $this->canDelete();
-                break;
+        if (!$user instanceof UserInterface) {
+            // Si l'utilisateur n'est pas connecté, il ne peut rien faire
+            return false;
         }
+
+        // Si l'utilisateur est admin, il peut tout faire
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        // Logique spécifique en fonction de l'attribut
+        switch ($attribute) {
+            case self::EDIT:
+                return $this->canEdit($product, $user);
+            case self::DELETE:
+                return $this->canDelete($product, $user);
+        }
+
+        return false;
     }
 
-    private function canEdit(){
+    private function canEdit(Products $product, UserInterface $user): bool
+    {
+        // Par exemple : seulement les utilisateurs ayant ROLE_PRODUCT_ADMIN peuvent éditer
         return $this->security->isGranted('ROLE_PRODUCT_ADMIN');
     }
-    private function canDelete(){
+
+    private function canDelete(Products $product, UserInterface $user): bool
+    {
+        // Par exemple : seul un administrateur peut supprimer un produit
         return $this->security->isGranted('ROLE_ADMIN');
     }
 }

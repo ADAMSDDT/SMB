@@ -51,10 +51,14 @@ class Products
     #[ORM\OneToMany(mappedBy: 'products', targetEntity: OrdersDetails::class)]
     private $ordersDetails;
 
+    #[ORM\ManyToMany(targetEntity: Size::class)]
+    private $sizes;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->ordersDetails = new ArrayCollection();
+        $this->sizes = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
     }
 
@@ -179,6 +183,30 @@ class Products
                 $ordersDetail->setProducts(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Size[]
+     */
+    public function getSizes(): Collection
+    {
+        return $this->sizes;
+    }
+
+    public function addSize(Size $size): self
+    {
+        if (!$this->sizes->contains($size)) {
+            $this->sizes[] = $size;
+        }
+
+        return $this;
+    }
+
+    public function removeSize(Size $size): self
+    {
+        $this->sizes->removeElement($size);
 
         return $this;
     }

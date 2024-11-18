@@ -3,49 +3,64 @@
 {% block title %}Liste des produits{% endblock %}
 
 {% block body %}
-<h1> Administration des produits </h1>
-     {<div class="container">
-        <div class="row">
-            {% include "_partials/_adminnav.html.twig" %}
-            <main class="col-9 border border-light bg-white p-2">
-                <h1>Liste des produits</h1>
-                <table class="table">
-                    <thead>
+<h1>Administration des produits</h1>
+<div class="container">
+    <div class="row">
+        {% include "_partials/_adminnav.html.twig" %}
+        <main class="col-9 border border-light bg-white p-2">
+            <h1>Liste des produits</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Photo</th>
+                        <th>Nom</th>
+                        <th>Prix</th>
+                        <th>Stock</th>
+                        <th>Catégorie(s)</th>
+                        <th>Tailles</th> {# Nouvelle colonne pour les tailles #}
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produit in produits %}
                         <tr>
-                            <th>ID</th>
-                            <th>Photo</th>
-                            <th>Nom</th>
-                            <th>Prix</th>
-                            <th>Stock</th>
-                            <th>Catégorie</th>
-                            <th>Actions</th>
+                            <td>{{ produit.id }}</td>
+                            <td>
+                                {% if produit.images|length > 0 %}
+                                    {% set firstImage = produit.images|first %}
+                                    <img src="{{ asset('assets/uploads/products/mini/300x300-' ~ firstImage.name) }}" alt="{{ produit.name }}" class="img-thumbnail">
+                                {% else %}
+                                    <img src="{{ asset('path/to/default/image.jpg') }}" alt="Default Image" class="img-thumbnail">
+                                {% endif %}
+                            </td>
+                            <td>{{ produit.name }}</td>
+                            <td>{{ produit.price / 100 }} €</td> <!-- Divisé par 100 pour afficher le prix en euros -->
+                            <td>{{ produit.stock }}</td>
+                            <td>
+                                {% for category in produit.categories %}
+                                    {{ category.name }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if produit.sizes|length > 0 %}
+                                    <ul>
+                                        {% for size in produit.sizes %}
+                                            <li>{{ size.name }}</li> {# Affiche chaque taille #}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span>Aucune taille disponible</span> {# Message par défaut si aucune taille n'est disponible #}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('admin_products_edit', {id: produit.id}) }}" class="btn btn-success">Modifier</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                       {% for produit in produits %}
-    <tr>
-        <td>{{ produit.id }}</td>
-        <td>
-            {% if produit.images|length > 0 %}
-                {% set firstImage = produit.images|first %}
-                <img src="{{ asset('assets/uploads/products/mini/300x300-' ~ firstImage.name) }}" alt="{{ produit.name }}" class="img-thumbnail">
-            {% else %}
-                <img src="{{ asset('path/to/default/image.jpg') }}" alt="Default Image" class="img-thumbnail">
-            {% endif %}
-        </td>
-        <td>{{ produit.name }}</td>
-        <td>{{ produit.price / 100 }}</td>
-        <td>{{ produit.stock }}</td>
-        <td>{{ produit.categories.name }}</td>
-        <td>
-            <a href="{{ path('admin_products_edit', {id: produit.id})}}" class="btn btn-success">Modifier</a>
-        </td>
-    </tr>
-{% endfor %}
-
-                    </tbody>
-                </table>
-            </main>
-        </div>
-    </div> }
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
 {% endblock %}

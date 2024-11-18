@@ -21,7 +21,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {# {% for produit in produits %}
+                       {# {% for produit in produits %}
+    <!-- Affichage du produit -->
+
                             <tr>
                                 <td>{{ produit.id }}</td>
                                 <td><img src="{{ asset('assets/uploads/products/mini/300x300-' ~ produit.images[0].name ) }}" alt="{{ produit.name }}" class="img-thumbnail"></td>
@@ -39,4 +41,5 @@
             </main>
         </div>
     </div>
+
 {% endblock %}

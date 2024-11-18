@@ -16,18 +16,18 @@
 {% block javascripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        let links = document.querySelectorAll("[data-delete]");
+        let deleteLinks = document.querySelectorAll("[data-delete]");
 
         // On boucle sur les liens
-        for (let link of links) {
+        for (let link of deleteLinks) {
             // On met un écouteur d'événements
             link.addEventListener("click", function (e) {
                 // On empêche la navigation
                 e.preventDefault();
 
                 // On demande confirmation
-                if (confirm("Voulez-vous supprimer cette image ?")) {
-                    // On envoie la requête ajax
+                if (confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+                    // On envoie la requête AJAX
                     fetch(this.getAttribute("href"), {
                         method: "DELETE",
                         headers: {
@@ -38,14 +38,16 @@
                     }).then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            this.parentElement.remove();
+                            alert('Produit supprimé avec succès');
+                            window.location.reload(); // Recharger la page après suppression
                         } else {
-                            alert(data.error);
+                            alert(data.error || 'Erreur lors de la suppression');
                         }
-                    });
+                    }).catch(err => alert('Erreur lors de la requête'));
                 }
             });
         }
     });
 </script>
+
 {% endblock %}

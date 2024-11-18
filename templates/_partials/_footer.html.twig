@@ -1,13 +1,54 @@
-<footer class="container-fluid bg-light">
-	<div class="row">
-		<section class="col">
-			Colonne 1
-		</section>
-		<section class="col">
-			Colonne 2
-		</section>
-		<section class="col">
-			Colonne 3
-		</section>
-	</div>
+<footer class="container-fluid bg-dark text-light py-5 mt-5">
+    <div class="row">
+        <!-- Première colonne : Liens de navigation -->
+        <section class="col-md-3 mb-3">
+            <h5>Liens rapides</h5>
+            <ul class="list-unstyled">
+                <li><a href="#" class="text-light text-decoration-none">Accueil</a></li>
+                <li><a href="#" class="text-light text-decoration-none">Catégories</a></li>
+            </ul>
+        </section>
+
+        <!-- Deuxième colonne : Informations de contact -->
+        <section class="col-md-3 mb-3">
+            <h5>Contactez-nous</h5>
+            <ul class="list-unstyled">
+                <li><strong>Adresse :</strong> 12 rue Maurice Dampierre 95310, Saint Ouen l'Aumône</li>
+                <li><strong>Téléphone :</strong> +33 6 43 63 32 42</li>
+                <li><strong>Email :</strong> <a href="mailto:contact@fashionfusion.com" class="text-light text-decoration-none">contact@fashionfusion.com</a></li>
+            </ul>
+        </section>
+
+        <!-- Troisième colonne : Réseaux sociaux -->
+        <section class="col-md-3 mb-3">
+            <h5>Suivez-nous</h5>
+            <ul class="list-unstyled d-flex">
+                <li><a href="#" class="me-3"><i class="fab fa-facebook-f text-light" style="font-size: 24px;"></i></a></li>
+                <li><a href="#" class="me-3"><i class="fab fa-twitter text-light" style="font-size: 24px;"></i></a></li>
+                <li><a href="#" class="me-3"><i class="fab fa-instagram text-light" style="font-size: 24px;"></i></a></li>
+                <li><a href="#"><i class="fab fa-linkedin-in text-light" style="font-size: 24px;"></i></a></li>
+            </ul>
+        </section>
+
+        <!-- Quatrième colonne : Newsletter -->
+        <section class="col-md-3 mb-3">
+            <h5>Newsletter</h5>
+            <form action="#" method="post">
+                <div class="mb-3">
+                    <label for="newsletter-email" class="form-label">Email :</label>
+                    <input type="email" class="form-control" id="newsletter-email" placeholder="Entrez votre email" required>
+                </div>
+                <button type="submit" class="btn btn-warning">S'inscrire</button>
+            </form>
+        </section>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col text-center">
+            <p class="small">&copy; 2024 Fashion Fusion. Tous droits réservés. | <a href="#" class="text-light text-decoration-none">Mentions légales</a> | <a href="#" class="text-light text-decoration-none">Politique de confidentialité</a></p>
+        </div>
+    </div>
 </footer>
+
+<!-- Font Awesome CDN for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

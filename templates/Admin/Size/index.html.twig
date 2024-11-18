@@ -1,0 +1,34 @@
+{# templates/admin/size/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Tailles{% endblock %}
+
+{% block body %}
+    <h1>Gestion des Tailles</h1>
+    <a href="{{ path('admin_size_add') }}" class="btn btn-primary">Ajouter une Taille</a>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for size in sizes %}
+                <tr>
+                    <td>{{ size.id }}</td>
+                    <td>{{ size.name }}</td>
+                    <td>
+                        <a href="{{ path('admin_size_edit', {id: size.id}) }}" class="btn btn-warning">Modifier</a>
+                        <form action="{{ path('admin_size_delete', {id: size.id}) }}" method="post" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ size.id) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

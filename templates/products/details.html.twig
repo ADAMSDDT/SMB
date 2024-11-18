@@ -1,24 +1,23 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Détails de {{ product.categories.name }}
-{% endblock %}
+{% block title %}Détails de {{ product.name }}{% endblock %}
 
 {% block body %}
     <main class="container">
         <section class="row">
             <div class="col-12">
-                <h1>detail de {{ product.categories.name }} </h1>
+                <h1>Détails de {{ product.name }}</h1>
             </div>
             <div class="col-6">
                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-indicators">
                         {% for iteration in 1..product.images|length %}
-                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ iteration - 1 }}" {{ (loop.first ) ?'class="active" aria-current="true"' : '' }} aria-label="Slide {{ iteration }}"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ iteration - 1 }}" {{ (loop.first) ? 'class="active" aria-current="true"' : '' }} aria-label="Slide {{ iteration }}"></button>
                         {% endfor %}
                     </div>
                     <div class="carousel-inner">
                         {% for image in product.images %}
-                            <div class="carousel-item {{ (loop.first ) ? 'active' : '' }}">
+                            <div class="carousel-item {{ (loop.first) ? 'active' : '' }}">
                                 <img src="{{ asset('assets/uploads/products/mini/300x300-') ~ image.name }}" class="d-block w-100" alt="{{ product.name }}">
                             </div>
                         {% endfor %}
@@ -37,12 +36,52 @@
                 <p>{{ product.description }}</p>
                 <p>Catégorie : {{ product.categories.name }}</p>
                 <p>Prix : {{ product.price / 100 }} €</p>
+
+                {% if product.sizes|length > 0 %}
+                    <p>Tailles disponibles :</p>
+                    <select id="sizeSelect" class="form-select">
+                        <option value="" disabled selected>Choisissez une taille</option>
+                        {% for size in product.sizes %}
+                            <option value="{{ size.id }}">{{ size.name }}</option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <p>Aucune taille disponible pour ce produit.</p>
+                {% endif %}
+
                 {% if product.stock > 0 %}
-                    <a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-success">Ajouter au panier</a>
+                    <a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-success" id="addToCartBtn">Ajouter au panier</a>
                 {% else %}
                     <p class="text-danger">Temporairement en rupture de stock</p>
                 {% endif %}
             </div>
         </section>
     </main>
+
+    {% block javascripts %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var addToCartBtn = document.getElementById('addToCartBtn');
+                var sizeSelect = document.getElementById('sizeSelect');
+                
+                if (addToCartBtn) {
+                    addToCartBtn.addEventListener('click', function(event) {
+                        event.preventDefault(); // Empêcher le comportement par défaut du lien
+
+                        if (!sizeSelect.value) {
+                            alert('Veuillez sélectionner une taille avant d\'ajouter au panier.');
+                            return;
+                        }
+
+                        // Afficher une notification ou alerte personnalisée
+                        alert('Le produit a été ajouté au panier avec la taille ' + sizeSelect.options[sizeSelect.selectedIndex].text + '.');
+
+                        // Rediriger l'utilisateur vers l'URL d'ajout au panier après l'alerte
+                        window.location.href = addToCartBtn.getAttribute('href') + '?size=' + sizeSelect.value;
+                    });
+                }
+            });
+        </script>
+    {% endblock %}
+
 {% endblock %}

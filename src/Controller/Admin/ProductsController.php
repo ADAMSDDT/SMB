@@ -22,77 +22,81 @@ class ProductsController extends AbstractController
     public function index(ProductsRepository $productsRepository): Response
     {
         $produits = $productsRepository->findAll();
-        return $this->render('admin/products/index.html.twig', compact('produits'));
+        return $this->render('admin/products/index.html.twig', [
+            'produits' => $produits
+        ]);;
     }
 
     #[Route('/ajout', name: 'add')]
-    public function add(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, PictureService $pictureService): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+public function add(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, PictureService $pictureService): Response
+{
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $product = new Products();
-        $productForm = $this->createForm(ProductsFormType::class, $product);
-        $productForm->handleRequest($request);
+    $product = new Products();
+    $productForm = $this->createForm(ProductsFormType::class, $product);
+    $productForm->handleRequest($request);
 
-        if ($productForm->isSubmitted() && $productForm->isValid()) {
-            $images = $productForm->get('images')->getData();
-            
-            foreach ($images as $image) {
-                $folder = 'products';
-                $fichier = $pictureService->add($image, $folder, 300, 300); // Assurez-vous que les valeurs passées ici sont des entiers.
-
-                $img = new Images();
-                $img->setName($fichier);
-                $product->addImage($img);
-            }
-
-            $slug = $slugger->slug($product->getName());
-            $product->setSlug($slug);
-
-            $em->persist($product);
-            $em->flush();
-
-            $this->addFlash('success', 'Produit ajouté avec succès');
-            return $this->redirectToRoute('admin_products_index');
+    if ($productForm->isSubmitted() && $productForm->isValid()) {
+        // Ajout des images
+        $images = $productForm->get('images')->getData();
+        foreach ($images as $image) {
+            $folder = 'products';
+            $fichier = $pictureService->add($image, $folder, 300, 300);
+            $img = new Images();
+            $img->setName($fichier);
+            $product->addImage($img);
         }
 
-        return $this->renderForm('admin/products/add.html.twig', compact('productForm'));
+        // Gérer le slug
+        $slug = $slugger->slug($product->getName());
+        $product->setSlug($slug);
+
+        // Pas besoin de faire quoi que ce soit d'autre pour les tailles ici
+        $em->persist($product);
+        $em->flush();
+
+        $this->addFlash('success', 'Produit ajouté avec succès');
+        return $this->redirectToRoute('admin_products_index');
     }
 
-    #[Route('/edition/{id}', name: 'edit')]
-    public function edit(Products $product, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, PictureService $pictureService): Response
-    {
-        $this->denyAccessUnlessGranted('PRODUCT_EDIT', $product);
-        $productForm = $this->createForm(ProductsFormType::class, $product);
-        $productForm->handleRequest($request);
+    return $this->renderForm('admin/products/add.html.twig', compact('productForm'));
+}
 
-        if ($productForm->isSubmitted() && $productForm->isValid()) {
-            $images = $productForm->get('images')->getData();
+#[Route('/edition/{id}', name: 'edit')]
+public function edit(Products $product, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, PictureService $pictureService): Response
+{
+    $this->denyAccessUnlessGranted('PRODUCT_EDIT', $product);
+    $productForm = $this->createForm(ProductsFormType::class, $product);
+    $productForm->handleRequest($request);
 
-            foreach ($images as $image) {
-                $folder = 'products';
-                $fichier = $pictureService->add($image, $folder, 300, 300);
-
-                $img = new Images();
-                $img->setName($fichier);
-                $product->addImage($img);
-            }
-
-            $slug = $slugger->slug($product->getName());
-            $product->setSlug($slug);
-
-            $em->persist($product);
-            $em->flush();
-
-            $this->addFlash('success', 'Produit modifié avec succès');
-            return $this->redirectToRoute('admin_products_index');
+    if ($productForm->isSubmitted() && $productForm->isValid()) {
+        // Ajout des images
+        $images = $productForm->get('images')->getData();
+        foreach ($images as $image) {
+            $folder = 'products';
+            $fichier = $pictureService->add($image, $folder, 300, 300);
+            $img = new Images();
+            $img->setName($fichier);
+            $product->addImage($img);
         }
 
-        return $this->render('admin/products/edit.html.twig',[
-            'productForm' => $productForm->createView(),
-            'product' => $product
-        ]);
+        // Gérer le slug
+        $slug = $slugger->slug($product->getName());
+        $product->setSlug($slug);
+
+        // Pas besoin de faire quoi que ce soit d'autre pour les tailles ici
+        $em->persist($product);
+        $em->flush();
+
+        $this->addFlash('success', 'Produit modifié avec succès');
+        return $this->redirectToRoute('admin_products_index');
     }
+
+    return $this->render('admin/products/edit.html.twig', [
+        'productForm' => $productForm->createView(),
+        'product' => $product,
+    ]);
+}
 
     #[Route('/suppression/{id}', name: 'delete')]
     public function delete(Products $product): Response
